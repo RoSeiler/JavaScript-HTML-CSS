@@ -1,0 +1,33 @@
+pasos para el archivo.js:
+
+1° make url
+
+2° show loading spinner
+
+3° fetch from the API
+
+4° use the URL to change the current image
+
+5° stop showing loading spinner
+
+
+///////////////////////////////////////////archivo JS previo:///////////////////////////////////////////////////////////////////
+const breeds_url = "http://dog.ceo/api/breeds/image/random";
+function addDog(){
+    //show loading spinner
+    fetch(breeds_url)
+    .then(function(response) {
+        return response.json()//va a volver como json
+    })
+    .then(function(data){
+        const img = document.createElement("img")//le pedimos q cree una nueva etiqueta img
+        img.src = data.message; // ???????????????????????????
+        img.alt = "cute dog"; 
+        document.querySelector(".doggos").appendChild(img) //es un método en JavaScript que se utiliza para agregar un nuevo elemento hijo a un elemento padre en una página web.
+    //stop loading spinner
+    })
+    
+}
+
+document.querySelector(".add-dog").addEventListener("click",addDog); 
+//shift+alt+a comenta todo un bloque de código
