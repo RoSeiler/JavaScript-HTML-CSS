@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="./styles.css"/>
+    <title>Quiz.js</title>
+</head>
+
+<body>
+    <header>
+        <div class="audio"> 
+            <audio id="music" src="./audio/body-funk-official-music-video.mp3"></audio>
+            <button onclick="document.getElementById('music').play()">Play Music</button>
+            <button onclick="document.getElementById('music').pause()">Pause Music</button>
+        </div>
+        
+        <h1 id="titleH1">Quiz.js</h1>
+        <p>Do you know JS? Find out!</p>
+        <div id="score">
+            Score: <span id="correct">0</span> / <span id="completed">0</span>
+        </div>
+    </header>
+
+    <main>
+        <div id="statement">JavaScript was invented in 1995</div>
+        <div id="options">
+            <button name="true" value="true">true</button>
+            <button name="false" value="false">false</button>
+        </div>
+        <div id="explanation" class="hidden">
+
+        </div>
+        <button id="next-question" name="next-question" disabled="">Next Question</button>
+
+    </main>
+
+
+    
+<script src="./sript.js"></script>
+</body>
+<loom-container id="lo-engage-ext-container">
+    <loom-shadow classname="resolved"></loom-shadow></loom-container>
+<loom-container id="lo-companion-container">
+    <loom-shadow classname="resolved"></loom-shadow></loom-container>
+
+</html>
