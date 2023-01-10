@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Doggo Fetch</title>
+    <style>
+        body {
+            margin: 1rem auto;
+            padding: 3rem;
+            font-family: sans-serif;
+        }
+        header {
+            width: 70%;
+            margin: 1em auto;
+        }
+        main {
+            max-width: 70%;
+            margin: 0px auto;
+            display:flex; 
+            flex-direction: column;
+        }
+        img {
+            max-width: 100%;
+        }
+        #image-frame {
+            font-size: x-large;
+            text-align: center;
+            margin: 1rem auto;
+        }
+        #explanation, #score {
+            padding: 1rem;
+            text-align: center;
+        }
+        #options {
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        button {
+            padding: 0.5rem;
+            font-size: medium;
+            border-radius: 5px;
+        }
+        .correct {
+            background-color: lightgreen;
+        }
+        .incorrect {
+            background-color: lightpink;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+  <style type="text/css">
+@font-face {
+  font-weight: 400;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Book.woff2') format('woff2');
+}
+
+@font-face {
+  font-weight: 500;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-weight: 700;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-weight: 900;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Black.woff2') format('woff2');
+}</style></head>
+  <body>
+    <header>
+    <h1>Guess the Dog</h1>
+    <p>What breed is the dog in this image?</p>
+
+    </header>
+
+    <main>
+    <div id="image-frame">
+    </div>
+    <div id="options">
+    </div>
+
+    </main>
+
+  
+
+
+  <script type="module">
+
+    const RANDOM_IMG_ENDPOINT = "https://dog.ceo/api/breeds/image/random";
+
+    const BREEDS = ["affenpinscher", "african", "airedale", "akita", "appenzeller", "shepherd australian", "basenji", "beagle", "bluetick", "borzoi", "bouvier", "boxer", "brabancon", "briard", "norwegian buhund", "boston bulldog", "english bulldog", "french bulldog", "staffordshire bullterrier", "australian cattledog", "chihuahua", "chow", "clumber", "cockapoo", "border collie", "coonhound", "cardigan corgi", "cotondetulear", "dachshund", "dalmatian", "great dane", "scottish deerhound", "dhole", "dingo", "doberman", "norwegian elkhound", "entlebucher", "eskimo", "lapphund finnish", "bichon frise", "germanshepherd", "italian greyhound", "groenendael", "havanese", "afghan hound", "basset hound", "blood hound", "english hound", "ibizan hound", "plott hound", "walker hound", "husky", "keeshond", "kelpie", "komondor", "kuvasz", "labradoodle", "labrador", "leonberg", "lhasa", "malamute", "malinois", "maltese", "bull mastiff", "english mastiff", "tibetan mastiff", "mexicanhairless", "mix", "bernese mountain", "swiss mountain", "newfoundland", "otterhound", "caucasian ovcharka", "papillon", "pekinese", "pembroke", "miniature pinscher", "pitbull", "german pointer", "germanlonghair pointer", "pomeranian", "medium poodle", "miniature poodle", "standard poodle", "toy poodle", "pug", "puggle", "pyrenees", "redbone", "chesapeake retriever", "curly retriever", "flatcoated retriever", "golden retriever", "rhodesian ridgeback", "rottweiler", "saluki", "samoyed", "schipperke", "giant schnauzer", "miniature schnauzer", "english setter", "gordon setter", "irish setter", "sharpei", "english sheepdog", "shetland sheepdog", "shiba", "shihtzu", "blenheim spaniel", "brittany spaniel", "cocker spaniel", "irish spaniel", "japanese spaniel", "sussex spaniel", "welsh spaniel", "english springer", "stbernard", "american terrier", "australian terrier", "bedlington terrier", "border terrier", "cairn terrier", "dandie terrier", "fox terrier", "irish terrier", "kerryblue terrier", "lakeland terrier", "norfolk terrier", "norwich terrier", "patterdale terrier", "russell terrier", "scottish terrier", "sealyham terrier", "silky terrier", "tibetan terrier", "toy terrier", "welsh terrier", "westhighland terrier", "wheaten terrier", "yorkshire terrier", "tervuren", "vizsla", "spanish waterdog", "weimaraner", "whippet", "irish wolfhound"];
+
+    
+    // Utility function to get a randomly selected item from an array
+    function getRandomElement(array) {
+        const i = Math.floor(Math.random() * array.length); //Math.random() da un número aleatorio entre 0 y 1 y luego multiplica este número por la longitud del array
+        return array[i]; // devuelve el elemento en la posición i aleatorio del array
+    }
+
+    // Utility function to shuffle the order of items in an array in-place
+    function shuffleArray(array) {
+        return array.sort((a,b) => Math.random() - 0.5); //.sort() dado 2 elementos los ordena
+    }
+
+
+
+    // Given an array of possible answers, a correct answer value, and a number of choices to get (n),
+    // return a list of that many choices, including the correct answer and others from the array
+    function getMultipleChoices(n, correctAnswer, posibleChoices) {
+       
+     const choices = [];
+     choices.push(correctAnswer);
+       while (choices.length < n) {
+        let candidate = getRandomElement(posibleChoices);
+        if (!choices.includes(candidate)){ //si no lo incluye, q lo agregue
+            
+            choices.push(candidate);
+        }
+         
+       }
+     return shuffleArray(choices) //mezcla con la fn anterior el array
+    }
+   
+    
+    // Given a URL such as "https://images.dog.ceo/breeds/poodle-standard/n02113799_2280.jpg"
+    // return the breed name string as formatted in the breed list, e.g. "standard poodle"
+    function getBreedFromURL(url) {
+        
+        let unsplitBreed = url.split("/")[4];
+        
+        let [breed, subbreed] =  unsplitBreed.split("-");
+        return [subbreed, breed].join(" ").trim()//.trim() para q no haya espaciado adelante de una sola palabra;
+    }
+
+
+
+    // Esta función realiza una solicitud HTTP a la URL proporcionada, obtiene la respuesta y 
+    //la convierte en formato JSON, y luego devuelve el valor de la clave message del objeto JSON:
+
+    async function fetchMessage(url) { //indicamos que la función es asincrónica y que puede utilizar *await* para esperar a que se resuelva una promesa.
+        const response = await fetch(url); //solicitud http a la url
+        const body = await response.json(); //esperamos a q se complete la promesa y obtenemos la respuesta y la pasamos a formato json
+        const {message} = body;
+        return message
+    }
+
+
+    // Function to add the multiple-choice buttons to the page
+    function renderButtons(choicesArray, correctAnswer) {
+
+        
+        function buttonHandler(e) {
+            if (e.target.value === correctAnswer) {
+                e.target.classList.add("correct");
+            } else {
+                e.target.classList.add("incorrect");
+                document.querySelector(`button[value="${correctAnswer}"]`).classList.add("correct");
+            }
+        }
+
+        const options = document.getElementById("options"); // Container for the multiple-choice buttons
+
+       
+        // For each of the choices in choicesArray,
+        // Create a button element whose name, value, and textContent properties are the value of that choice,
+        // attach a "click" event listener with the buttonHandler function,
+        // and append the button as a child of the options element
+          for (let choice of choicesArray) {
+           let button = document.createElement("button"); 
+           button.textContent = choice;
+           button.value = choice;
+           button.name = choice;
+           button.addEventListener("click", buttonHandler);
+           options.appendChild(button); //appendChild se utiliza para agregar un elemento HTML como hijo de otro elemento.
+          }  //acá se agrega el botón al elemento HTML utilizando el método appendChild.
+    }
+
+
+    // Esta función tiene como objetivo mostrar una imagen en un elemento HTML y crear una serie de botones para interactuar con ella:
+    function renderQuiz(imgUrl, correctAnswer, choices) {
+        const image = document.createElement("img"); //creamos el elemento img
+        image.setAttribute("src", imgUrl); // establece la URL de la imagen que se mostrará.
+        const frame = document.getElementById("image-frame"); //en la variable frame guardamos el elemento html donde se ostrará la img
+
+        image.addEventListener("load", () => { //se activ el evento cuando la img haya cargado
+            // Wait until the image has finished loading before trying to add elements to the page
+            frame.replaceChildren(image); //se utiliza el método replaceChildren para reemplazar cualquier 
+                                          //hijo existente del elemento frame con el elemento img. 
+                                          //Esto hace que la imagen se muestre en el elemento frame.
+            renderButtons(choices, correctAnswer); //se llama a la función renderButtons para crear y mostrar los botones
+        })
+        
+    }
+
+    // Función para cargar los datos necesarios para mostrar el cuestionario:
+    async function loadQuizData() {
+        
+        document.getElementById("image-frame").textContent = "Fetching doggo..."; //Seleccionamos el elemento 
+        //HTML donde se mostrará la imagen utilizando el método getElementById. 
+        //Se establece el texto del elemento en "Fetching doggo..."
+        
+        const doggoImgUrl = await fetchMessage(RANDOM_IMG_ENDPOINT); //Se llama a la función fetchMessage con la URL de la API como parámetro.
+                              //espera a q loadQuizData() se complete???????????????
+        const correctBreed = getBreedFromURL(doggoImgUrl);
+        //getBreedFromURL() analiza la URL de la imagen y devuelve el nombre de la raza que se muestra en la imagen. 
+        
+        const breedChoices = getMultipleChoices(3, correctBreed, BREEDS);
+        //Se llama a la función getMultipleChoices con tres parámetros: el número de opciones,
+        // el nombre de la raza correcta y un array de todas las razas disponibles
+        return [doggoImgUrl, correctBreed, breedChoices];
+    }
+    
+   
+    const [imgUrl, correctAnser, choices] = await loadQuizData();
+                                            //loadQuizData() hace una solicitud HTTP a una API y devuelve 
+                                            //un array con tres valores: la URL de una imagen, el nombre 
+                                            //de la raza correcta y una serie de opciones de razas aleatorias.
+    renderQuiz(imgUrl, correctAnser, choices);//para mostrar
+
+
+  </script>
+
+</body><loom-container id="lo-engage-ext-container"><loom-shadow classname="resolved"></loom-shadow></loom-container><loom-container id="lo-companion-container"><loom-shadow classname="resolved"></loom-shadow></loom-container></html>
